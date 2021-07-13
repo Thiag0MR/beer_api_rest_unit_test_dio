@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.digitalinnovation.beerapi.dto.BeerDTO;
 import com.digitalinnovation.beerapi.entity.Beer;
 import com.digitalinnovation.beerapi.exceptions.BeerAlreadyRegisteredException;
+import com.digitalinnovation.beerapi.exceptions.BeerNotFoundException;
 import com.digitalinnovation.beerapi.mapper.BeerMapper;
 import com.digitalinnovation.beerapi.repository.BeerRepository;
 
@@ -26,10 +27,19 @@ public class BeerService {
 		return BeerMapper.INSTANCE.beerToBeerDTO(savedBeer);
 	}
 	
+	public BeerDTO findBeerByName(String beerName) throws BeerNotFoundException {
+
+		Beer savedBeer = beerRepository.findByName(beerName)
+				.orElseThrow(() -> new BeerNotFoundException(beerName));
+		
+		return BeerMapper.INSTANCE.beerToBeerDTO(savedBeer);
+	}
+	
 	private void verifyIfBeerIsAlreadyRegistered(String beerName) throws BeerAlreadyRegisteredException {
 		Optional<Beer> optFoundBeer = beerRepository.findByName(beerName);
-		if (!optFoundBeer.isPresent()) {
+		if (optFoundBeer.isPresent()) {
 			throw new BeerAlreadyRegisteredException(beerName);
 		}
 	}
+
 }
