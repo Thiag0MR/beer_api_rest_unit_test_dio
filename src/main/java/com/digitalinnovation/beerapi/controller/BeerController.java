@@ -1,5 +1,7 @@
 package com.digitalinnovation.beerapi.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,12 @@ public class BeerController {
 	public BeerDTO findBeerByName(@PathVariable("name") String beerName) throws BeerNotFoundException {
 		return beerService.findBeerByName(beerName);
 	}
+	
+	@GetMapping
+	public List<BeerDTO> listBeers() {
+		return beerService.listBeers();
+	}
+	
+	
 
 }

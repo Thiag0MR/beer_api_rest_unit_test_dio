@@ -1,6 +1,8 @@
 package com.digitalinnovation.beerapi.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,13 @@ public class BeerService {
 				.orElseThrow(() -> new BeerNotFoundException(beerName));
 		
 		return BeerMapper.INSTANCE.beerToBeerDTO(savedBeer);
+	}
+	
+	public List<BeerDTO> listBeers() {
+		return beerRepository.findAll()
+				.stream()
+				.map((Beer beer) -> BeerMapper.INSTANCE.beerToBeerDTO(beer))
+				.collect(Collectors.toList());
 	}
 	
 	private void verifyIfBeerIsAlreadyRegistered(String beerName) throws BeerAlreadyRegisteredException {
