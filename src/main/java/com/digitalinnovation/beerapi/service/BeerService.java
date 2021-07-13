@@ -4,13 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.digitalinnovation.beerapi.dto.BeerDTO;
+import com.digitalinnovation.beerapi.dto.QuantityDTO;
 import com.digitalinnovation.beerapi.entity.Beer;
 import com.digitalinnovation.beerapi.exceptions.BeerAlreadyRegisteredException;
 import com.digitalinnovation.beerapi.exceptions.BeerNotFoundException;
+import com.digitalinnovation.beerapi.exceptions.BeerStockExceededException;
 import com.digitalinnovation.beerapi.mapper.BeerMapper;
 import com.digitalinnovation.beerapi.repository.BeerRepository;
 
@@ -49,6 +53,17 @@ public class BeerService {
 		beerRepository.deleteById(id);
 	}
 	
+	public BeerDTO increment(Long id, int quantityToIncrement) throws BeerNotFoundException, BeerStockExceededException {
+		Beer foundBeer = verifyIfExists(id);
+		int quantityAfterIncrement = foundBeer.getQuantity() + quantityToIncrement;
+		if (quantityAfterIncrement <= foundBeer.getMax()) {
+			foundBeer.setQuantity(quantityAfterIncrement);
+			beerRepository.save(foundBeer);
+			return BeerMapper.INSTANCE.beerToBeerDTO(foundBeer);
+		}
+		throw new BeerStockExceededException(id, quantityToIncrement);
+	}
+	
 	private Beer verifyIfExists(Long id) throws BeerNotFoundException {
 		return beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
 	}
@@ -59,7 +74,5 @@ public class BeerService {
 			throw new BeerAlreadyRegisteredException(beerName);
 		}
 	}
-
-	
 
 }
