@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.digitalinnovation.beerapi.dto.BeerDTO;
 import com.digitalinnovation.beerapi.entity.Beer;
+import com.digitalinnovation.beerapi.exceptions.BeerAlreadyRegisteredException;
 import com.digitalinnovation.beerapi.service.BeerService;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class BeerController {
 	
 	@PostMapping()
 	@ResponseStatus(HttpStatus.CREATED)
-	public BeerDTO createBeer(@Valid @RequestBody BeerDTO beerDTO) {
+	public BeerDTO createBeer(@Valid @RequestBody BeerDTO beerDTO) throws BeerAlreadyRegisteredException {
 		return beerService.createBeer(beerDTO);
 	}
 
