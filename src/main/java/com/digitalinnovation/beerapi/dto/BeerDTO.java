@@ -6,11 +6,13 @@ import javax.validation.constraints.Size;
 
 import com.digitalinnovation.beerapi.enums.BeerType;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BeerDTO {
 	
 	private Long id;
